@@ -1,0 +1,65 @@
+const addToCart = async (req, res) => {
+  try {
+    const user_id = req.user._id;  // Extract the user ID from the request
+    console.log("user_id", user_id);
+
+    // Check if the user already has a cart
+    let user_details = await Cart.findOne({ emp_id: user_id })
+      .populate({
+        path: "items.item_id",  // Populate item details from Submenu model
+        select: "item_name price"  // Only select item_name and price fields
+      });
+
+    console.log("user_details", user_details);
+
+    // Create the new product object
+    let new_items = {
+      item_id: req.body.item_id,
+      quantity: req.body.quantity
+    };
+
+    // If the user doesn't have a cart, create a new one
+    if (!user_details) {
+      const new_cart = new Cart({
+        emp_id: user_id,  // Use emp_id here
+        items: [new_items]  // Ensure this matches the 'items' field in your schema
+      });
+      const response = await new_cart.save();
+      return res.status(200).json({ message: "Cart is added", data: response });
+    } 
+    
+    // If the user already has a cart, update or add the product
+    let cart_items = user_details.items;
+    let itemExists = false;
+
+    // Check if the product already exists in the cart and update the quantity if so
+    for (let i = 0; i < cart_items.length; i++) {
+      if (new_items.item_id.toString() === cart_items[i].item_id.toString()) {  // Added toString() for ObjectId comparison
+        cart_items[i].quantity = new_items.quantity;
+        itemExists = true;
+        break;
+      }
+    }
+
+    // If the product doesn't exist in the cart, add it
+    if (!itemExists) {
+      cart_items.push(new_items);
+    }
+
+    // Update the user's cart with the modified product list
+    let updatedCart = await Cart.findOneAndUpdate(
+      { emp_id: user_id },  // Use emp_id here
+      { items: cart_items },  // Corrected field name for the cart items
+      { new: true }  // Return the updated document
+    )
+      .populate({
+        path: "items.item_id",  // Populate item details again
+        select: "item_name price"  // Only select item_name and price fields
+      });
+
+    return res.status(200).json({ message: "Item added to cart successfully", data: updatedCart });
+  } 
+  catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
