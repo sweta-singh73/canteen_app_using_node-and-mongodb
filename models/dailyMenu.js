@@ -1,21 +1,3 @@
-// const mongoose = require("mongoose");
-
-// const todayMenuSchema = new mongoose.Schema({
-//   mealType: {
-//     type: String,
-//     enum: ["Breakfast", "Lunch", "Snacks"],
-//     required: true,
-//   },
-//   items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Item" }],
-//   date: { type: String, required: true },
-// },
-// {
-//     timestamps:true
-// });
-
-// const Todaymenu = mongoose.model("todaymenu", todayMenuSchema);
-// module.exports = Todaymenu;
-
 const mongoose = require("mongoose");
 
 const todayMenuSchema = new mongoose.Schema(

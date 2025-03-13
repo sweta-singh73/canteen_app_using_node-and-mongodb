@@ -18,7 +18,11 @@ const orderSchema = new mongoose.Schema({
     enum: ["pending", "completed", "cancelled"],
     default: "pending",
   },
-  createdAt: { type: Date, default: Date.now },
+
+},
+{
+    timestamps:true
 });
 
-module.exports = mongoose.model("Order", orderSchema);
+const Order = mongoose.model("Order", orderSchema);
+module.exports = Order;

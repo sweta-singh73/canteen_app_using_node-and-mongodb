@@ -1,6 +1,6 @@
 const Order = require("../models/order");
 const Cart = require("../models/cart");
-const Wallet = require("../models/");
+const Wallet = require("../models/wallet");
 
 // Place an Order
 const placeOrder = async (req, res) => {
