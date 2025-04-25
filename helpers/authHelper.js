@@ -5,12 +5,13 @@ const generateOtp = () => {
 }
 
 //create token
-const generateToken = async(id, role)=>{
+const generateToken = async (id, role, emp_id) => {
   try {
-    let token = JWT.sign({ _id: id, role: role }, process.env.JWT_SECRET_KEY , { expiresIn: '24h' });
+    let token = JWT.sign({ _id: id, role: role, emp_id: emp_id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
     return token;
   } catch (error) {
-    return {error:error.message};
+    return { error: error.message };
   }
-}
+};
+
 module.exports = { generateOtp, generateToken };
